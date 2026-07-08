@@ -4,6 +4,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { PostType } from "@/types/global";
 import { queryClient, useApp } from "@/components/app-provider";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { formatDistanceToNow } from "date-fns";
 import { router } from "expo-router";
 import { useState } from "react";
 
@@ -17,6 +18,9 @@ export default function PostCard({
   const { auth } = useApp();
   const [isDeleting, setIsDeleting] = useState(false);
   const isOwner = auth?.id && String(auth.id) === String(post.user.id);
+  const created = formatDistanceToNow(new Date(post.created), {
+    addSuffix: true,
+  });
 
   const deletePost = async () => {
     const token = await AsyncStorage.getItem("token");
@@ -36,7 +40,9 @@ export default function PostCard({
 
       if (res.ok) {
         await queryClient.invalidateQueries({ queryKey: ["Posts"] });
-        await queryClient.removeQueries({ queryKey: ["posts", String(post.id)] });
+        await queryClient.removeQueries({
+          queryKey: ["posts", String(post.id)],
+        });
         onDeleted?.();
       } else {
         const data = await res.json().catch(() => undefined);
@@ -90,7 +96,7 @@ export default function PostCard({
           <Text style={{ fontWeight: "bold", fontSize: 15 }}>
             {post.user.name}
           </Text>
-          <Text style={{ fontSize: 13, color: "teal" }}>{post.created}</Text>
+          <Text style={{ fontSize: 13, color: "teal" }}>{created}</Text>
           <TouchableOpacity onPress={() => router.push(`/view/${post.id}`)}>
             <Text style={{ marginTop: 5 }}>{post.content}</Text>
           </TouchableOpacity>
@@ -125,7 +131,7 @@ export default function PostCard({
           <Text>10</Text>
         </View>
         <View style={{ flexDirection: "row", gap: 10, alignItems: "center" }}>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => router.push(`/view/${post.id}`)}>
             <Ionicons name="chatbubble-outline" size={24} color={"gray"} />
           </TouchableOpacity>
           <Text>{post.comments ? post.comments.length : 0}</Text>

@@ -118,6 +118,7 @@ router.delete("/posts/:id", auth, async (req, res) => {
 
   await prisma.$transaction([
     prisma.comment.deleteMany({ where: { postId: id } }),
+    prisma.like.deleteMany({ where: { postId: id } }),
     prisma.post.delete({ where: { id } }),
   ]);
 

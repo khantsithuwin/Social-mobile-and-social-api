@@ -1,7 +1,7 @@
 import PostCard from "@/components/post-card";
 import { PostType } from "@/types/global";
 import { useQuery } from "@tanstack/react-query";
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import {
   ScrollView,
   Text,
@@ -57,7 +57,7 @@ export default function ViewPost() {
 
   return (
     <ScrollView>
-      <PostCard post={post} />
+      <PostCard post={post} onDeleted={() => router.back()} />
       <View style={{ padding: 15 }}>
         <TextInput
           style={{

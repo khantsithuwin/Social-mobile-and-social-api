@@ -1,10 +1,63 @@
-import { Text, TouchableOpacity, View } from "react-native";
+import { Alert, Text, TouchableOpacity, View } from "react-native";
 
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { PostType } from "@/types/global";
+import { queryClient, useApp } from "@/components/app-provider";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
+import { useState } from "react";
 
-export default function PostCard({ post }: { post: PostType }) {
+export default function PostCard({
+  post,
+  onDeleted,
+}: {
+  post: PostType;
+  onDeleted?: () => void;
+}) {
+  const { auth } = useApp();
+  const [isDeleting, setIsDeleting] = useState(false);
+  const isOwner = auth?.id && String(auth.id) === String(post.user.id);
+
+  const deletePost = async () => {
+    const token = await AsyncStorage.getItem("token");
+    if (!token) {
+      alert("Please login to delete your post");
+      return;
+    }
+
+    setIsDeleting(true);
+    try {
+      const res = await fetch(`http://localhost:8800/posts/${post.id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (res.ok) {
+        await queryClient.invalidateQueries({ queryKey: ["Posts"] });
+        await queryClient.removeQueries({ queryKey: ["posts", String(post.id)] });
+        onDeleted?.();
+      } else {
+        const data = await res.json().catch(() => undefined);
+        alert(data?.msg ?? "Unable to delete post");
+      }
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  const confirmDelete = () => {
+    Alert.alert("Delete post", "Are you sure you want to delete this post?", [
+      { text: "Cancel", style: "cancel" },
+      {
+        text: "Delete",
+        style: "destructive",
+        onPress: deletePost,
+      },
+    ]);
+  };
+
   return (
     <View
       style={{
@@ -33,7 +86,7 @@ export default function PostCard({ post }: { post: PostType }) {
             {post.user.name[0].toUpperCase()}
           </Text>
         </View>
-        <View style={{ flexShrink: 1 }}>
+        <View style={{ flex: 1 }}>
           <Text style={{ fontWeight: "bold", fontSize: 15 }}>
             {post.user.name}
           </Text>
@@ -42,6 +95,21 @@ export default function PostCard({ post }: { post: PostType }) {
             <Text style={{ marginTop: 5 }}>{post.content}</Text>
           </TouchableOpacity>
         </View>
+        {isOwner && (
+          <TouchableOpacity
+            onPress={confirmDelete}
+            disabled={isDeleting}
+            style={{
+              width: 36,
+              height: 36,
+              alignItems: "center",
+              justifyContent: "center",
+              opacity: isDeleting ? 0.4 : 1,
+            }}
+          >
+            <Ionicons name="trash-outline" size={22} color={"#dc2626"} />
+          </TouchableOpacity>
+        )}
       </View>
       <View
         style={{

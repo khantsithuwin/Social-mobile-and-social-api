@@ -11,9 +11,11 @@ import { useEffect, useState } from "react";
 export default function PostCard({
   post,
   onDeleted,
+  disableOpen,
 }: {
   post: PostType;
   onDeleted?: () => void;
+  disableOpen?: boolean;
 }) {
   const { auth, colors } = useApp();
   const [isDeleting, setIsDeleting] = useState(false);
@@ -110,43 +112,63 @@ export default function PostCard({
   return (
     <View
       style={{
-        marginHorizontal: 12,
-        marginTop: 10,
-        padding: 14,
+        marginHorizontal: 16,
+        marginTop: 12,
+        padding: 16,
         borderWidth: 1,
         borderColor: colors.border,
-        borderRadius: 8,
+        borderRadius: 20,
         backgroundColor: colors.card,
         boxShadow: "0 1px 2px rgba(15, 23, 42, 0.06)",
       }}
     >
-      <View style={{ flexDirection: "row", gap: 10 }}>
+      <View style={{ flexDirection: "row", gap: 12 }}>
         <View
           style={{
-            width: 54,
-            height: 54,
-            borderRadius: 54,
+            width: 48,
+            height: 48,
+            borderRadius: 48,
             alignItems: "center",
             justifyContent: "center",
-            backgroundColor: "teal",
+            backgroundColor: colors.primary,
           }}
         >
-          <Text style={{ color: "white" }}>
+          <Text style={{ color: "white", fontSize: 18, fontWeight: "700" }}>
             {post.user.name[0].toUpperCase()}
           </Text>
         </View>
         <View style={{ flex: 1 }}>
           <Text
-            style={{ fontWeight: "bold", fontSize: 15, color: colors.text }}
+            style={{ fontWeight: "700", fontSize: 16, color: colors.text }}
           >
             {post.user.name}
           </Text>
-          <Text style={{ fontSize: 13, color: "teal" }}>{created}</Text>
-          <TouchableOpacity onPress={() => router.push(`/view/${post.id}`)}>
-            <Text style={{ marginTop: 5, color: colors.text }}>
+          <Text style={{ fontSize: 13, color: colors.muted }}>{created}</Text>
+          {disableOpen ? (
+            <Text
+              style={{
+                marginTop: 8,
+                color: colors.text,
+                fontSize: 16,
+                lineHeight: 23,
+              }}
+            >
               {post.content}
             </Text>
-          </TouchableOpacity>
+          ) : (
+            <TouchableOpacity onPress={() => router.push(`/view/${post.id}`)}>
+              <Text
+                style={{
+                  marginTop: 8,
+                  color: colors.text,
+                  fontSize: 16,
+                  lineHeight: 23,
+                }}
+              >
+                {post.content}
+              </Text>
+            </TouchableOpacity>
+          )}
         </View>
         {isOwner && (
           <TouchableOpacity
@@ -160,15 +182,17 @@ export default function PostCard({
               opacity: isDeleting ? 0.4 : 1,
             }}
           >
-            <Ionicons name="trash-outline" size={22} color={"#dc2626"} />
+            <Ionicons name="trash-outline" size={21} color={colors.danger} />
           </TouchableOpacity>
         )}
       </View>
       <View
         style={{
           flexDirection: "row",
-          justifyContent: "space-around",
-          marginTop: 15,
+          justifyContent: "flex-start",
+          gap: 34,
+          marginTop: 18,
+          paddingLeft: 60,
         }}
       >
         <View style={{ flexDirection: "row", gap: 10, alignItems: "center" }}>
@@ -176,16 +200,25 @@ export default function PostCard({
             <Ionicons
               name={liked ? "heart" : "heart-outline"}
               size={24}
-              color={"red"}
+              color={liked ? colors.danger : colors.muted}
             />
           </TouchableOpacity>
-          <Text style={{ color: colors.text }}>{likesCount}</Text>
+          <Text style={{ color: colors.muted, fontWeight: "600" }}>
+            {likesCount}
+          </Text>
         </View>
         <View style={{ flexDirection: "row", gap: 10, alignItems: "center" }}>
-          <TouchableOpacity onPress={() => router.push(`/view/${post.id}`)}>
-            <Ionicons name="chatbubble-outline" size={24} color={"gray"} />
+          <TouchableOpacity
+            onPress={() => router.push(`/view/${post.id}`)}
+            disabled={disableOpen}
+          >
+            <Ionicons
+              name="chatbubble-outline"
+              size={24}
+              color={colors.muted}
+            />
           </TouchableOpacity>
-          <Text style={{ color: colors.text }}>
+          <Text style={{ color: colors.muted, fontWeight: "600" }}>
             {post.comments ? post.comments.length : 0}
           </Text>
         </View>

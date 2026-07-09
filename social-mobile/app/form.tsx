@@ -30,34 +30,45 @@ export default function Form() {
     <View
       style={{ flex: 1, padding: 20, backgroundColor: colors.background }}
     >
+      <Text
+        style={{
+          fontSize: 24,
+          fontWeight: "800",
+          color: colors.text,
+          marginBottom: 14,
+        }}
+      >
+        Create post
+      </Text>
       <TextInput
         value={content}
         onChangeText={setContent}
+        multiline
         style={{
-          backgroundColor: colors.card,
+          minHeight: 130,
+          backgroundColor: colors.input,
           borderColor: colors.border,
           color: colors.text,
           borderWidth: 1,
-          padding: 15,
-          borderRadius: 15,
-          fontSize: 15,
+          padding: 16,
+          borderRadius: 20,
+          fontSize: 16,
+          textAlignVertical: "top",
         }}
-        placeholder="What on your mind"
+        placeholder="What's on your mind?"
         placeholderTextColor="#9ca3af"
       />
       <TouchableOpacity
         onPress={add}
         style={{
-          backgroundColor: "teal",
-          borderColor: "#666666",
-          borderWidth: 1,
+          backgroundColor: colors.primary,
           padding: 15,
-          borderRadius: 15,
-          marginTop: 5,
+          borderRadius: 999,
+          marginTop: 14,
           alignItems: "center",
         }}
       >
-        <Text style={{ color: "white" }}>Post</Text>
+        <Text style={{ color: "white", fontWeight: "700" }}>Post</Text>
       </TouchableOpacity>
     </View>
   );

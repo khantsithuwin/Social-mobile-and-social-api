@@ -13,15 +13,18 @@ export default function Setting() {
         backgroundColor: colors.background,
       }}
     >
-      <Text style={{ fontSize: 21, fontWeight: "bold", color: colors.text }}>
+      <Text style={{ fontSize: 24, fontWeight: "800", color: colors.text }}>
         Appearance
+      </Text>
+      <Text style={{ marginTop: 6, color: colors.muted }}>
+        Choose how the app looks on your phone.
       </Text>
       <TouchableOpacity
         onPress={toggleTheme}
         style={{
-          marginTop: 15,
-          padding: 16,
-          borderRadius: 12,
+          marginTop: 18,
+          padding: 18,
+          borderRadius: 20,
           borderWidth: 1,
           borderColor: colors.border,
           backgroundColor: colors.card,
@@ -31,16 +34,29 @@ export default function Setting() {
         }}
       >
         <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
-          <Ionicons
-            name={isDark ? "moon" : "sunny"}
-            size={24}
-            color={isDark ? "#facc15" : "#f59e0b"}
-          />
+          <View
+            style={{
+              width: 42,
+              height: 42,
+              borderRadius: 42,
+              alignItems: "center",
+              justifyContent: "center",
+              backgroundColor: isDark ? "#312e81" : "#fef3c7",
+            }}
+          >
+            <Ionicons
+              name={isDark ? "moon" : "sunny"}
+              size={22}
+              color={isDark ? "#c4b5fd" : "#f59e0b"}
+            />
+          </View>
           <Text style={{ fontSize: 16, color: colors.text }}>
             {isDark ? "Dark mode" : "Light mode"}
           </Text>
         </View>
-        <Text style={{ color: "teal", fontWeight: "bold" }}>Change</Text>
+        <Text style={{ color: colors.primary, fontWeight: "700" }}>
+          Change
+        </Text>
       </TouchableOpacity>
     </View>
   );

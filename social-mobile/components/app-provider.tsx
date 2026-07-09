@@ -23,7 +23,11 @@ type AuthContextType = {
     background: string;
     card: string;
     text: string;
+    muted: string;
     border: string;
+    primary: string;
+    danger: string;
+    input: string;
   };
 };
 
@@ -34,10 +38,14 @@ export default function AppProvider({ children }: { children: ReactNode }) {
   const [isDark, setIsDark] = useState(false);
 
   const colors = {
-    background: isDark ? "#111827" : "#f3f4f6",
-    card: isDark ? "#1f2937" : "#ffffff",
-    text: isDark ? "#f9fafb" : "#111827",
-    border: isDark ? "#374151" : "#e5e7eb",
+    background: isDark ? "#0f172a" : "#f8fafc",
+    card: isDark ? "#1e293b" : "#ffffff",
+    text: isDark ? "#f8fafc" : "#0f172a",
+    muted: isDark ? "#94a3b8" : "#64748b",
+    border: isDark ? "#334155" : "#e2e8f0",
+    primary: "#14b8a6",
+    danger: "#ef4444",
+    input: isDark ? "#162033" : "#ffffff",
   };
 
   const toggleTheme = async () => {

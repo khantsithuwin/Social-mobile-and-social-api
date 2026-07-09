@@ -53,7 +53,10 @@ export default function Home() {
   }
 
   return (
-    <ScrollView style={{ backgroundColor: colors.background }}>
+    <ScrollView
+      style={{ backgroundColor: colors.background }}
+      contentContainerStyle={{ paddingVertical: 8 }}
+    >
       {posts?.map((post) => {
         return <PostCard key={post.id} post={post} />;
       })}

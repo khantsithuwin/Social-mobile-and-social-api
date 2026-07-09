@@ -4,12 +4,25 @@ import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 
 function AppStack() {
-  const { isDark } = useApp();
+  const { isDark, colors } = useApp();
 
   return (
     <ThemeProvider value={isDark ? DarkTheme : DefaultTheme}>
       <StatusBar style={isDark ? "light" : "dark"} />
-      <Stack>
+      <Stack
+        screenOptions={{
+          headerStyle: { backgroundColor: colors.background },
+          headerShadowVisible: false,
+          headerTintColor: colors.text,
+          headerTitleStyle: {
+            fontSize: 18,
+            fontWeight: "800",
+          },
+          contentStyle: {
+            backgroundColor: colors.background,
+          },
+        }}
+      >
         <Stack.Screen
           name="(home)"
           options={{ headerShown: false, title: "Home" }}

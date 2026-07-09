@@ -174,20 +174,33 @@ export default function ViewPost() {
   }
 
   return (
-    <ScrollView style={{ backgroundColor: colors.background }}>
-      <PostCard post={post} onDeleted={() => router.back()} />
+    <ScrollView
+      style={{ backgroundColor: colors.background }}
+      contentContainerStyle={{ paddingVertical: 8 }}
+    >
+      <PostCard post={post} onDeleted={() => router.back()} disableOpen />
       <View style={{ padding: 15 }}>
+        <Text
+          style={{
+            fontSize: 20,
+            fontWeight: "800",
+            color: colors.text,
+            marginBottom: 12,
+          }}
+        >
+          Replies
+        </Text>
         <TextInput
           value={content}
           onChangeText={setContent}
           style={{
-            backgroundColor: colors.card,
+            backgroundColor: colors.input,
             borderColor: colors.border,
             color: colors.text,
             borderWidth: 1,
             padding: 15,
-            borderRadius: 15,
-            fontSize: 15,
+            borderRadius: 18,
+            fontSize: 16,
           }}
           placeholder="Your reply"
           placeholderTextColor="#9ca3af"
@@ -196,18 +209,16 @@ export default function ViewPost() {
           onPress={addComment}
           disabled={isAdding}
           style={{
-            backgroundColor: "teal",
-            borderColor: "#666666",
-            borderWidth: 1,
+            backgroundColor: colors.primary,
             padding: 15,
             marginTop: 10,
-            borderRadius: 15,
+            borderRadius: 999,
             alignItems: "center",
-            marginBottom: 10,
+            marginBottom: 14,
             opacity: isAdding ? 0.5 : 1,
           }}
         >
-          <Text style={{ color: "white" }}>
+          <Text style={{ color: "white", fontWeight: "700" }}>
             {isAdding ? "Adding..." : "Add Comment"}
           </Text>
         </TouchableOpacity>
@@ -230,9 +241,9 @@ export default function ViewPost() {
                   borderWidth: 1,
                   borderColor: colors.border,
                   boxShadow: "0 1px 2px rgba(15, 23, 42, 0.06)",
-                  borderRadius: 15,
-                  padding: 10,
-                  marginVertical: 5,
+                  borderRadius: 18,
+                  padding: 14,
+                  marginVertical: 6,
                 }}
               >
                 <View style={{ flexDirection: "row", gap: 10 }}>
@@ -246,7 +257,7 @@ export default function ViewPost() {
                     >
                       {comment.user.name}
                     </Text>
-                    <Text style={{ fontSize: 13, color: "teal" }}>
+                    <Text style={{ fontSize: 13, color: colors.muted }}>
                       {commentCreated}
                     </Text>
                   </View>
@@ -265,12 +276,21 @@ export default function ViewPost() {
                       <Ionicons
                         name="trash-outline"
                         size={20}
-                        color={"#dc2626"}
+                        color={colors.danger}
                       />
                     </TouchableOpacity>
                   )}
                 </View>
-                <Text style={{ color: colors.text }}>{comment.content}</Text>
+                <Text
+                  style={{
+                    color: colors.text,
+                    marginTop: 8,
+                    fontSize: 15,
+                    lineHeight: 22,
+                  }}
+                >
+                  {comment.content}
+                </Text>
               </View>
             );
           })}

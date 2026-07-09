@@ -8,7 +8,25 @@ export default function HomeLayout() {
   const { auth, colors } = useApp();
 
   return (
-    <Tabs>
+    <Tabs
+      screenOptions={{
+        headerStyle: { backgroundColor: colors.background },
+        headerShadowVisible: false,
+        headerTitleStyle: {
+          color: colors.text,
+          fontSize: 22,
+          fontWeight: "800",
+        },
+        tabBarStyle: {
+          backgroundColor: colors.card,
+          borderTopColor: colors.border,
+          height: 86,
+          paddingTop: 8,
+        },
+        tabBarActiveTintColor: colors.primary,
+        tabBarInactiveTintColor: colors.muted,
+      }}
+    >
       <Tabs.Screen
         name="index"
         options={{
@@ -22,9 +40,17 @@ export default function HomeLayout() {
                 onPress={() => {
                   router.push("/form");
                 }}
-                style={{ marginRight: 15 }}
+                style={{
+                  marginRight: 16,
+                  width: 38,
+                  height: 38,
+                  borderRadius: 19,
+                  backgroundColor: colors.primary,
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
               >
-                <Ionicons name="add-circle" size={24} color={colors.text} />
+                <Ionicons name="add" size={24} color="white" />
               </TouchableOpacity>
             ) : (
               <></>

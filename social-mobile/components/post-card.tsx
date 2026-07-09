@@ -6,7 +6,7 @@ import { queryClient, useApp } from "@/components/app-provider";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { formatDistanceToNow } from "date-fns";
 import { router } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function PostCard({
   post,
@@ -17,10 +17,53 @@ export default function PostCard({
 }) {
   const { auth } = useApp();
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isLiking, setIsLiking] = useState(false);
+  const [liked, setLiked] = useState(post.likedByMe);
+  const [likesCount, setLikesCount] = useState(post.likesCount);
   const isOwner = auth?.id && String(auth.id) === String(post.user.id);
   const created = formatDistanceToNow(new Date(post.created), {
     addSuffix: true,
   });
+
+  useEffect(() => {
+    setLiked(post.likedByMe);
+    setLikesCount(post.likesCount);
+  }, [post.likedByMe, post.likesCount]);
+
+  const toggleLike = async () => {
+    const token = await AsyncStorage.getItem("token");
+    if (!token) {
+      alert("Please login to like this post");
+      return;
+    }
+
+    setIsLiking(true);
+    try {
+      const res = await fetch("http://localhost:8800/likes", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ postId: Number(post.id) }),
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        setLiked(data.liked);
+        setLikesCount(data.likesCount);
+        await queryClient.invalidateQueries({ queryKey: ["Posts"] });
+        await queryClient.invalidateQueries({
+          queryKey: ["Post", String(post.id)],
+        });
+      } else {
+        const data = await res.json().catch(() => undefined);
+        alert(data?.msg ?? "Unable to like post");
+      }
+    } finally {
+      setIsLiking(false);
+    }
+  };
 
   const deletePost = async () => {
     const token = await AsyncStorage.getItem("token");
@@ -41,7 +84,7 @@ export default function PostCard({
       if (res.ok) {
         await queryClient.invalidateQueries({ queryKey: ["Posts"] });
         await queryClient.removeQueries({
-          queryKey: ["posts", String(post.id)],
+          queryKey: ["Post", String(post.id)],
         });
         onDeleted?.();
       } else {
@@ -125,10 +168,14 @@ export default function PostCard({
         }}
       >
         <View style={{ flexDirection: "row", gap: 10, alignItems: "center" }}>
-          <TouchableOpacity>
-            <Ionicons name="heart-outline" size={24} color={"red"} />
+          <TouchableOpacity onPress={toggleLike} disabled={isLiking}>
+            <Ionicons
+              name={liked ? "heart" : "heart-outline"}
+              size={24}
+              color={"red"}
+            />
           </TouchableOpacity>
-          <Text>10</Text>
+          <Text>{likesCount}</Text>
         </View>
         <View style={{ flexDirection: "row", gap: 10, alignItems: "center" }}>
           <TouchableOpacity onPress={() => router.push(`/view/${post.id}`)}>

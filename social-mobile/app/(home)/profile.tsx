@@ -1,4 +1,4 @@
-import { useApp } from "@/components/app-provider";
+import { queryClient, useApp } from "@/components/app-provider";
 import { router } from "expo-router";
 import { useState } from "react";
 import { Text, View, TextInput, TouchableOpacity } from "react-native";
@@ -28,6 +28,7 @@ export default function Profile() {
       const { user, token } = await res.json();
       setAuth(user);
       await AsyncStorage.setItem("token", token);
+      await queryClient.invalidateQueries({ queryKey: ["Posts"] });
       router.push("/");
     } else {
       alert("Unable to login");
@@ -37,6 +38,7 @@ export default function Profile() {
   const logout = async () => {
     setAuth(undefined);
     await AsyncStorage.removeItem("token");
+    await queryClient.invalidateQueries({ queryKey: ["Posts"] });
   };
 
   return (

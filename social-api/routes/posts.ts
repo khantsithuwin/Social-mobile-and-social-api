@@ -204,6 +204,15 @@ router.post("/likes", auth, async (req, res) => {
     return res.status(400).json({ msg: "postId is required" });
   }
 
+  const post = await prisma.post.findUnique({
+    where: { id: postId },
+    select: { id: true },
+  });
+
+  if (!post) {
+    return res.status(404).json({ msg: "post not found" });
+  }
+
   const existing = await prisma.like.findUnique({
     where: { userId_postId: { userId, postId } },
   });

@@ -10,6 +10,8 @@ export type PostType = {
   content: string;
   user: UserType;
   comments: CommentType[];
+  likesCount: number;
+  likedByMe: boolean;
   created: string;
 };
 

@@ -1,11 +1,14 @@
 import PostCard from "@/components/post-card";
 import { PostType } from "@/types/global";
 import { useQuery } from "@tanstack/react-query";
-import { Link } from "expo-router";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { View, Text, ScrollView } from "react-native";
 
 async function fetchPosts(): Promise<PostType[]> {
-  const res = await fetch("http://localhost:8800/posts");
+  const token = await AsyncStorage.getItem("token");
+  const res = await fetch("http://localhost:8800/posts", {
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
+  });
   return res.json();
 }
 

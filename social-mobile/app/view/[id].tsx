@@ -17,7 +17,10 @@ import {
 } from "react-native";
 
 async function fetchPost(id: string): Promise<PostType> {
-  const res = await fetch(`http://localhost:8800/posts/${id}`);
+  const token = await AsyncStorage.getItem("token");
+  const res = await fetch(`http://localhost:8800/posts/${id}`, {
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
+  });
   return res.json();
 }
 
@@ -33,12 +36,12 @@ export default function ViewPost() {
     error,
     isLoading,
   } = useQuery({
-    queryKey: ["posts", id as string],
+    queryKey: ["Post", id as string],
     queryFn: () => fetchPost(id as string),
   });
 
   const refreshPost = async () => {
-    await queryClient.invalidateQueries({ queryKey: ["posts", id as string] });
+    await queryClient.invalidateQueries({ queryKey: ["Post", id as string] });
     await queryClient.invalidateQueries({ queryKey: ["Posts"] });
   };
 

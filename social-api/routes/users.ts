@@ -92,15 +92,23 @@ router.get("/users/:id", async (req, res) => {
 });
 
 router.post("/users", async (req, res) => {
-  const name = req.body?.name;
-  const username = req.body?.username;
+  const name = req.body?.name?.trim();
+  const username = req.body?.username?.trim();
   const bio = req.body?.bio;
   const password = req.body?.password;
 
   if (!name || !username || !password) {
     return res
       .status(400)
-      .json({ msg: "name,username and password are required" });
+      .json({ msg: "name, username and password are required" });
+  }
+
+  const existingUser = await prisma.user.findUnique({
+    where: { username },
+  });
+
+  if (existingUser) {
+    return res.status(409).json({ msg: "username is already taken" });
   }
 
   const user = await prisma.user.create({
@@ -112,5 +120,12 @@ router.post("/users", async (req, res) => {
     },
   });
 
-  res.status(201).json(user);
+  const token = jwt.sign(
+    {
+      id: user.id,
+    },
+    process.env.JWT_SECRET as string,
+  );
+
+  res.status(201).json({ user, token });
 });

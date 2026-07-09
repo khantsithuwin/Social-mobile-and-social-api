@@ -6,32 +6,74 @@ import { Text, View, TextInput, TouchableOpacity } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Profile() {
+  const [isRegister, setIsRegister] = useState(false);
+  const [name, setName] = useState("");
   const [username, setUsername] = useState("");
+  const [bio, setBio] = useState("");
   const [password, setPassword] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { auth, setAuth } = useApp();
 
   const login = async () => {
     if (!username || !password) {
-      return false;
+      alert("Username and password are required");
+      return;
     }
 
-    const res = await fetch("http://localhost:8800/login", {
-      method: "POST",
-      body: JSON.stringify({ username, password }),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    setIsSubmitting(true);
+    try {
+      const res = await fetch("http://localhost:8800/login", {
+        method: "POST",
+        body: JSON.stringify({ username, password }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
-    if (res.ok) {
-      const { user, token } = await res.json();
-      setAuth(user);
-      await AsyncStorage.setItem("token", token);
-      await queryClient.invalidateQueries({ queryKey: ["Posts"] });
-      router.push("/");
-    } else {
-      alert("Unable to login");
+      if (res.ok) {
+        const { user, token } = await res.json();
+        setAuth(user);
+        await AsyncStorage.setItem("token", token);
+        await queryClient.invalidateQueries({ queryKey: ["Posts"] });
+        router.push("/");
+      } else {
+        const data = await res.json().catch(() => undefined);
+        alert(data?.msg ?? "Unable to login");
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const register = async () => {
+    if (!name.trim() || !username.trim() || !password) {
+      alert("Name, username and password are required");
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      const res = await fetch("http://localhost:8800/users", {
+        method: "POST",
+        body: JSON.stringify({ name, username, bio, password }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (res.ok) {
+        const { user, token } = await res.json();
+        setAuth(user);
+        await AsyncStorage.setItem("token", token);
+        await queryClient.invalidateQueries({ queryKey: ["Posts"] });
+        router.push("/");
+      } else {
+        const data = await res.json().catch(() => undefined);
+        alert(data?.msg ?? "Unable to register");
+      }
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -98,8 +140,23 @@ export default function Profile() {
               marginBottom: 10,
             }}
           >
-            LOGIN
+            {isRegister ? "REGISTER" : "LOGIN"}
           </Text>
+          {isRegister && (
+            <TextInput
+              value={name}
+              onChangeText={setName}
+              style={{
+                backgroundColor: "white",
+                borderColor: "#666666",
+                borderWidth: 1,
+                padding: 15,
+                borderRadius: 15,
+                fontSize: 15,
+              }}
+              placeholder="name"
+            />
+          )}
           <TextInput
             value={username}
             onChangeText={setUsername}
@@ -128,8 +185,25 @@ export default function Profile() {
             }}
             placeholder="password"
           />
+          {isRegister && (
+            <TextInput
+              value={bio}
+              onChangeText={setBio}
+              multiline
+              style={{
+                backgroundColor: "white",
+                borderColor: "#666666",
+                borderWidth: 1,
+                padding: 15,
+                borderRadius: 15,
+                fontSize: 15,
+              }}
+              placeholder="bio (optional)"
+            />
+          )}
           <TouchableOpacity
-            onPress={login}
+            onPress={isRegister ? register : login}
+            disabled={isSubmitting}
             style={{
               backgroundColor: "teal",
               borderColor: "#666666",
@@ -138,9 +212,30 @@ export default function Profile() {
               borderRadius: 15,
               marginTop: 5,
               alignItems: "center",
+              opacity: isSubmitting ? 0.5 : 1,
             }}
           >
-            <Text style={{ color: "white" }}>Login</Text>
+            <Text style={{ color: "white" }}>
+              {isSubmitting
+                ? "Please wait..."
+                : isRegister
+                  ? "Register"
+                  : "Login"}
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => setIsRegister(!isRegister)}
+            disabled={isSubmitting}
+            style={{
+              padding: 10,
+              alignItems: "center",
+            }}
+          >
+            <Text style={{ color: "teal" }}>
+              {isRegister
+                ? "Already have an account? Login"
+                : "New user? Register"}
+            </Text>
           </TouchableOpacity>
         </View>
       )}

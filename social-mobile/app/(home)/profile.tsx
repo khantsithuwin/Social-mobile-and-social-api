@@ -13,7 +13,7 @@ export default function Profile() {
   const [password, setPassword] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const { auth, setAuth } = useApp();
+  const { auth, setAuth, colors } = useApp();
 
   const login = async () => {
     if (!username || !password) {
@@ -89,6 +89,7 @@ export default function Profile() {
         flex: 1,
         alignItems: "center",
         justifyContent: "center",
+        backgroundColor: colors.background,
       }}
     >
       {auth && (
@@ -99,6 +100,7 @@ export default function Profile() {
               fontWeight: "bold",
               textAlign: "center",
               marginBottom: 10,
+              color: colors.text,
             }}
           >
             {auth.name}
@@ -109,6 +111,7 @@ export default function Profile() {
               fontWeight: "bold",
               textAlign: "center",
               marginBottom: 10,
+              color: colors.text,
             }}
           >
             @{auth.username}
@@ -138,6 +141,7 @@ export default function Profile() {
               fontWeight: "bold",
               textAlign: "center",
               marginBottom: 10,
+              color: colors.text,
             }}
           >
             {isRegister ? "REGISTER" : "LOGIN"}
@@ -147,14 +151,16 @@ export default function Profile() {
               value={name}
               onChangeText={setName}
               style={{
-                backgroundColor: "white",
-                borderColor: "#666666",
+                backgroundColor: colors.card,
+                borderColor: colors.border,
+                color: colors.text,
                 borderWidth: 1,
                 padding: 15,
                 borderRadius: 15,
                 fontSize: 15,
               }}
               placeholder="name"
+              placeholderTextColor="#9ca3af"
             />
           )}
           <TextInput
@@ -162,28 +168,32 @@ export default function Profile() {
             onChangeText={setUsername}
             autoCapitalize="none"
             style={{
-              backgroundColor: "white",
-              borderColor: "#666666",
+              backgroundColor: colors.card,
+              borderColor: colors.border,
+              color: colors.text,
               borderWidth: 1,
               padding: 15,
               borderRadius: 15,
               fontSize: 15,
             }}
             placeholder="username"
+            placeholderTextColor="#9ca3af"
           />
           <TextInput
             value={password}
             onChangeText={setPassword}
             secureTextEntry
             style={{
-              backgroundColor: "white",
-              borderColor: "#666666",
+              backgroundColor: colors.card,
+              borderColor: colors.border,
+              color: colors.text,
               borderWidth: 1,
               padding: 15,
               borderRadius: 15,
               fontSize: 15,
             }}
             placeholder="password"
+            placeholderTextColor="#9ca3af"
           />
           {isRegister && (
             <TextInput
@@ -191,14 +201,16 @@ export default function Profile() {
               onChangeText={setBio}
               multiline
               style={{
-                backgroundColor: "white",
-                borderColor: "#666666",
+                backgroundColor: colors.card,
+                borderColor: colors.border,
+                color: colors.text,
                 borderWidth: 1,
                 padding: 15,
                 borderRadius: 15,
                 fontSize: 15,
               }}
               placeholder="bio (optional)"
+              placeholderTextColor="#9ca3af"
             />
           )}
           <TouchableOpacity

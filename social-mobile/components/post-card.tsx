@@ -15,7 +15,7 @@ export default function PostCard({
   post: PostType;
   onDeleted?: () => void;
 }) {
-  const { auth } = useApp();
+  const { auth, colors } = useApp();
   const [isDeleting, setIsDeleting] = useState(false);
   const [isLiking, setIsLiking] = useState(false);
   const [liked, setLiked] = useState(post.likedByMe);
@@ -114,9 +114,9 @@ export default function PostCard({
         marginTop: 10,
         padding: 14,
         borderWidth: 1,
-        borderColor: "#e5e7eb",
+        borderColor: colors.border,
         borderRadius: 8,
-        backgroundColor: "#ffffff",
+        backgroundColor: colors.card,
         boxShadow: "0 1px 2px rgba(15, 23, 42, 0.06)",
       }}
     >
@@ -136,12 +136,16 @@ export default function PostCard({
           </Text>
         </View>
         <View style={{ flex: 1 }}>
-          <Text style={{ fontWeight: "bold", fontSize: 15 }}>
+          <Text
+            style={{ fontWeight: "bold", fontSize: 15, color: colors.text }}
+          >
             {post.user.name}
           </Text>
           <Text style={{ fontSize: 13, color: "teal" }}>{created}</Text>
           <TouchableOpacity onPress={() => router.push(`/view/${post.id}`)}>
-            <Text style={{ marginTop: 5 }}>{post.content}</Text>
+            <Text style={{ marginTop: 5, color: colors.text }}>
+              {post.content}
+            </Text>
           </TouchableOpacity>
         </View>
         {isOwner && (
@@ -175,13 +179,15 @@ export default function PostCard({
               color={"red"}
             />
           </TouchableOpacity>
-          <Text>{likesCount}</Text>
+          <Text style={{ color: colors.text }}>{likesCount}</Text>
         </View>
         <View style={{ flexDirection: "row", gap: 10, alignItems: "center" }}>
           <TouchableOpacity onPress={() => router.push(`/view/${post.id}`)}>
             <Ionicons name="chatbubble-outline" size={24} color={"gray"} />
           </TouchableOpacity>
-          <Text>{post.comments ? post.comments.length : 0}</Text>
+          <Text style={{ color: colors.text }}>
+            {post.comments ? post.comments.length : 0}
+          </Text>
         </View>
       </View>
     </View>

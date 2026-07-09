@@ -1,4 +1,5 @@
 import PostCard from "@/components/post-card";
+import { useApp } from "@/components/app-provider";
 import { PostType } from "@/types/global";
 import { useQuery } from "@tanstack/react-query";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -13,6 +14,7 @@ async function fetchPosts(): Promise<PostType[]> {
 }
 
 export default function Home() {
+  const { colors } = useApp();
   const {
     data: posts,
     isLoading,
@@ -23,21 +25,35 @@ export default function Home() {
   });
   if (error) {
     return (
-      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-        <Text>{error?.message}</Text>
+      <View
+        style={{
+          flex: 1,
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: colors.background,
+        }}
+      >
+        <Text style={{ color: colors.text }}>{error?.message}</Text>
       </View>
     );
   }
   if (isLoading) {
     return (
-      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-        <Text>Loading....</Text>
+      <View
+        style={{
+          flex: 1,
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: colors.background,
+        }}
+      >
+        <Text style={{ color: colors.text }}>Loading....</Text>
       </View>
     );
   }
 
   return (
-    <ScrollView>
+    <ScrollView style={{ backgroundColor: colors.background }}>
       {posts?.map((post) => {
         return <PostCard key={post.id} post={post} />;
       })}

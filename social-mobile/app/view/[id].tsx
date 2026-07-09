@@ -26,7 +26,7 @@ async function fetchPost(id: string): Promise<PostType> {
 
 export default function ViewPost() {
   const { id } = useLocalSearchParams();
-  const { auth } = useApp();
+  const { auth, colors } = useApp();
   const [content, setContent] = useState("");
   const [isAdding, setIsAdding] = useState(false);
   const [deletingCommentId, setDeletingCommentId] = useState<string>();
@@ -124,7 +124,14 @@ export default function ViewPost() {
 
   if (error) {
     return (
-      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+      <View
+        style={{
+          flex: 1,
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: colors.background,
+        }}
+      >
         <Text style={{ fontWeight: "bold", color: "red" }}>
           {error.message}
         </Text>
@@ -134,7 +141,14 @@ export default function ViewPost() {
 
   if (!post) {
     return (
-      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+      <View
+        style={{
+          flex: 1,
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: colors.background,
+        }}
+      >
         <Text style={{ fontWeight: "bold", color: "red" }}>
           There is no post
         </Text>
@@ -144,28 +158,39 @@ export default function ViewPost() {
 
   if (isLoading) {
     return (
-      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-        <Text style={{ fontWeight: "bold" }}>Loading...</Text>
+      <View
+        style={{
+          flex: 1,
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: colors.background,
+        }}
+      >
+        <Text style={{ fontWeight: "bold", color: colors.text }}>
+          Loading...
+        </Text>
       </View>
     );
   }
 
   return (
-    <ScrollView>
+    <ScrollView style={{ backgroundColor: colors.background }}>
       <PostCard post={post} onDeleted={() => router.back()} />
       <View style={{ padding: 15 }}>
         <TextInput
           value={content}
           onChangeText={setContent}
           style={{
-            backgroundColor: "white",
-            borderColor: "#666666",
+            backgroundColor: colors.card,
+            borderColor: colors.border,
+            color: colors.text,
             borderWidth: 1,
             padding: 15,
             borderRadius: 15,
             fontSize: 15,
           }}
           placeholder="Your reply"
+          placeholderTextColor="#9ca3af"
         />
         <TouchableOpacity
           onPress={addComment}
@@ -201,9 +226,9 @@ export default function ViewPost() {
               <View
                 key={comment.id}
                 style={{
-                  backgroundColor: "white",
+                  backgroundColor: colors.card,
                   borderWidth: 1,
-                  borderColor: "#e5e7eb",
+                  borderColor: colors.border,
                   boxShadow: "0 1px 2px rgba(15, 23, 42, 0.06)",
                   borderRadius: 15,
                   padding: 10,
@@ -212,7 +237,13 @@ export default function ViewPost() {
               >
                 <View style={{ flexDirection: "row", gap: 10 }}>
                   <View style={{ flex: 1 }}>
-                    <Text style={{ fontWeight: "bold", fontSize: 15 }}>
+                    <Text
+                      style={{
+                        fontWeight: "bold",
+                        fontSize: 15,
+                        color: colors.text,
+                      }}
+                    >
                       {comment.user.name}
                     </Text>
                     <Text style={{ fontSize: 13, color: "teal" }}>
@@ -239,7 +270,7 @@ export default function ViewPost() {
                     </TouchableOpacity>
                   )}
                 </View>
-                <Text>{comment.content}</Text>
+                <Text style={{ color: colors.text }}>{comment.content}</Text>
               </View>
             );
           })}

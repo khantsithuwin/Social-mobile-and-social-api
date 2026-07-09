@@ -5,7 +5,7 @@ import { TouchableOpacity } from "react-native";
 import { useApp } from "@/components/app-provider";
 
 export default function HomeLayout() {
-  const { auth } = useApp();
+  const { auth, colors } = useApp();
 
   return (
     <Tabs>
@@ -24,7 +24,7 @@ export default function HomeLayout() {
                 }}
                 style={{ marginRight: 15 }}
               >
-                <Ionicons name="add-circle" size={24} />
+                <Ionicons name="add-circle" size={24} color={colors.text} />
               </TouchableOpacity>
             ) : (
               <></>

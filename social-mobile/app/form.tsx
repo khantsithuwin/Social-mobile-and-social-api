@@ -1,10 +1,11 @@
-import { queryClient } from "@/components/app-provider";
+import { queryClient, useApp } from "@/components/app-provider";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import { useState } from "react";
 import { View, TextInput, Text, TouchableOpacity } from "react-native";
 
 export default function Form() {
+  const { colors } = useApp();
   const [content, setContent] = useState("");
 
   const add = async () => {
@@ -26,19 +27,23 @@ export default function Form() {
   };
 
   return (
-    <View style={{ padding: 20 }}>
+    <View
+      style={{ flex: 1, padding: 20, backgroundColor: colors.background }}
+    >
       <TextInput
         value={content}
         onChangeText={setContent}
         style={{
-          backgroundColor: "white",
-          borderColor: "#666666",
+          backgroundColor: colors.card,
+          borderColor: colors.border,
+          color: colors.text,
           borderWidth: 1,
           padding: 15,
           borderRadius: 15,
           fontSize: 15,
         }}
         placeholder="What on your mind"
+        placeholderTextColor="#9ca3af"
       />
       <TouchableOpacity
         onPress={add}

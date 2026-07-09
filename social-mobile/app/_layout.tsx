@@ -1,9 +1,14 @@
-import AppProvider from "@/components/app-provider";
+import AppProvider, { useApp } from "@/components/app-provider";
+import { DarkTheme, DefaultTheme, ThemeProvider } from "@react-navigation/native";
 import { Stack } from "expo-router";
+import { StatusBar } from "expo-status-bar";
 
-export default function RootLayout() {
+function AppStack() {
+  const { isDark } = useApp();
+
   return (
-    <AppProvider>
+    <ThemeProvider value={isDark ? DarkTheme : DefaultTheme}>
+      <StatusBar style={isDark ? "light" : "dark"} />
       <Stack>
         <Stack.Screen
           name="(home)"
@@ -15,6 +20,14 @@ export default function RootLayout() {
           options={{ title: "New Post", presentation: "modal" }}
         />
       </Stack>
+    </ThemeProvider>
+  );
+}
+
+export default function RootLayout() {
+  return (
+    <AppProvider>
+      <AppStack />
     </AppProvider>
   );
 }
